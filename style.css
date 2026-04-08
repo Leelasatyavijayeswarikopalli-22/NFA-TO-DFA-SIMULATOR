@@ -1,0 +1,71 @@
+body {
+    font-family: Arial;
+    background:linear-gradient(to top ,#141313,#d8aaaa,#a08989,#eb6767,#331703);
+    padding: 0px;
+    margin: 20px;
+}
+
+#controls {
+    background: linear-gradient(to top,#6ab9e3,#95d3e3,#bbd1d8,#c0edf3);
+    border: 2px solid black;
+    width: 30%;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: #0c0c0b 2px 5px 5px;
+}
+
+button, select{
+    width: 90%;
+    padding: 10px;
+    margin-top: 10px;
+    box-shadow: #0c0c0b 2px 5px 5px;
+    border-radius: 20px;
+}
+input{
+    width: 82%;
+    padding: 10px;
+    margin-top: 10px;
+    box-shadow: #0c0c0b 2px 5px 5px;
+    border-radius: 20px;
+}
+
+h2 {
+    margin-top: 30px;
+}
+
+#nfaTable, #dfaDiagram,#nfaDiagram, #dfaTable {
+    background: white;
+    border: 2px solid black;
+    padding: 15px;
+    height:auto !important;
+    border-radius: 10px;
+    box-shadow: #0c0c0b 2px 5px 5px;
+}
+ #dfaDiagram,#nfaDiagram{
+    min-height: 400px;
+ }
+#nfadfa{
+   background: linear-gradient(to top,#6ab9e3,#6a97ec,#32beed,#f3d39e);
+    border: 2px solid black;
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: #0c0c0b 2px 5px 5px;
+    height:auto !important;
+}
+#output{
+    display:flex;
+    gap:20px;
+}
+#header{
+     background: linear-gradient(to top,#9bd5f4,#32beed,#f3d39e);
+    border: 2px solid black;
+    width: 98%;
+    height:20%;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: #0c0c0b 2px 5px 5px;
+}
+#alphabetList{
+    margin-top: 10px;
+}

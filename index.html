@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NFA to DFA Visual Simulator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2 id="header">NFA → DFA Visual Simulator</h2>
+<div id="output">
+<div id="controls">
+    
+    <button onclick="addState()">Add State</button>
+    <button onclick="removeState()">Remove State</button>
+
+    <h3>Initial State</h3>
+    <select id="initialStateDropdown" onchange="setInitialState()"></select>
+
+    <h3>Final States</h3>
+    <div id="finalStatesContainer"></div>
+
+    <h3>Alphabet</h3>
+    <button onclick="addAlphabet()">Add Symbol</button>
+    <button onclick="removeAlphabet()">Remove Symbol</button>
+    <div id="alphabetList"></div>
+
+    <h3>Add Transition</h3>
+    <button onclick="addTransition()">Add Transition</button>
+    <button onclick="removeTransition()">Remove Transition</button>
+    <h3>Simulate</h3>
+    <input id="inputString" placeholder="Enter string">
+    <button onclick="simulate()">Simulate</button>
+
+    <h3>NFA → DFA</h3>
+    <button onclick="convertNFAtoDFA()">Convert</button>
+
+</div>
+<div id="nfadfa">
+<h2>NFA Transitions</h2>
+<div id="nfaTable"></div>
+<h2>NFA Visualization</h2>
+ <div id="nfaDiagram"></div>
+<h2>DFA Transitions</h2>
+<div id="dfaTable"></div>
+<h2>DFA Visualization</h2>
+<div id="dfaDiagram"></div>
+</div>
+</div>
+<script src="script.js"></script>
+
+</body>
+</html>
