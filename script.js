@@ -181,10 +181,10 @@ function addTransition() {
         alert("Invalid state!");
         return;
     }
-    if (!alphabet.includes(symbol)) {
-        alert("Symbol not in alphabet!");
-        return;
-    }
+    if (!alphabet.includes(symbol) && symbol !== "eps") {
+    alert("Symbol not in alphabet!");
+    return;
+}
 
     let exists = transitions.some(
         t => t.from === from && t.symbol === symbol && t.to === to
@@ -219,6 +219,24 @@ function removeTransition() {
 // ==========================
 // SIMULATION
 // ==========================
+function epsilonClosure(stateSet) {
+    let stack = [...stateSet];
+    let closure = new Set(stateSet);
+
+    while (stack.length > 0) {
+        let state = stack.pop();
+
+        transitions.forEach(t => {
+            if (t.from === state && t.symbol === "eps" && !closure.has(t.to)) {
+                closure.add(t.to);
+                stack.push(t.to);
+            }
+        });
+    }
+
+    return closure;
+}
+
 
 function simulate() {
     let input = document.getElementById("inputString").value.trim();
@@ -228,41 +246,30 @@ function simulate() {
         return;
     }
 
-    // store all active paths
-    let currentStates = [initialState];
+    let currentStates = epsilonClosure(new Set([initialState]));
 
     for (let ch of input) {
-        let nextStates = [];
+        let nextStates = new Set();
 
         for (let state of currentStates) {
-            for (let t of transitions) {
+            transitions.forEach(t => {
                 if (t.from === state && t.symbol === ch) {
-                    nextStates.push(t.to);
+                    nextStates.add(t.to);
                 }
-            }
+            });
         }
 
-        // remove duplicates
-        currentStates = [...new Set(nextStates)];
-
-        if (currentStates.length === 0) {
-            alert("REJECTED");
-            return;
-        }
+       currentStates = epsilonClosure(nextStates);
     }
-
-    // accept only if ANY ending state is final
-    for (let s of currentStates) {
-        if (finalStates.has(s)) {
-            alert("ACCEPTED");
-            return;
-        }
+for (let s of currentStates) {
+    if (finalStates.has(s)) {
+        alert("ACCEPTED");
+        return;
     }
-
-    alert("REJECTED");
 }
 
-
+alert("REJECTED");
+}
 
 // ==========================
 // NFA DIAGRAM 
@@ -457,7 +464,7 @@ function convertNFAtoDFA() {
     let dfaStates = [];
     let queue = [];
 
-    let start = [initialState];
+    let start = Array.from(epsilonClosure(new Set([initialState])));
     dfaStates.push(start);
     queue.push(start);
 
@@ -466,45 +473,55 @@ function convertNFAtoDFA() {
     while (queue.length > 0) {
         let current = queue.shift();
 
-        alphabet.forEach(symbol => {
-    let newSet = [];
-    transitions.forEach(t => {
-        if (current.includes(t.from) && t.symbol === symbol)
-            if (!newSet.includes(t.to)) newSet.push(t.to);
-    });
+        alphabet.filter(s => s !== "eps").forEach(symbol => {
 
-    newSet.sort(); // ✅ add this to standardize state ordering
+            let moveSet = new Set();
 
-    if (newSet.length === 0) newSet = ["∅"];
-
-    if (!dfaStates.some(s => JSON.stringify(s) === JSON.stringify(newSet))) {
-        dfaStates.push(newSet);
-        queue.push(newSet);
-    }
-
-    dfaTrans.push({
-        from: current.join(","),
-        symbol,
-        to: newSet.join(",")
-    });
-});
-    }
-
-    // 🔥 add self-loop for dead state
-    if (dfaStates.some(s => s[0] === "∅")) {
-        alphabet.forEach(symbol => {
-            dfaTrans.push({
-                from: "∅",
-                symbol,
-                to: "∅"
+            current.forEach(state => {
+                transitions.forEach(t => {
+                    if (t.from === state && t.symbol === symbol) {
+                        moveSet.add(t.to);
+                    }
+                });
             });
+
+           let newSet;
+
+        if (moveSet.size === 0) {
+           newSet = ["∅"];
+            } else {
+           let closure = epsilonClosure(moveSet);
+          newSet = Array.from(closure).sort();
+            }
+
+            if (!dfaStates.some(s => JSON.stringify(s) === JSON.stringify(newSet))) {
+                dfaStates.push(newSet);
+                queue.push(newSet);
+            }
+
+            dfaTrans.push({
+                from: current.join(","),
+                symbol,
+                to: newSet.join(",")
+            });
+
         });
+    }
+
+    // dead state self loop
+    if (dfaStates.some(s => s[0] === "∅")) {
+        alphabet.filter(s => s !== "eps").forEach(symbol => {
+        dfaTrans.push({
+         from: "∅",
+         symbol,
+         to: "∅"
+      });
+   });
     }
 
     refreshDFATable(dfaTrans);
     drawDFADiagram(dfaStates, dfaTrans);
 }
-
 
 
 // ==========================
